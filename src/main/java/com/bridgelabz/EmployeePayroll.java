@@ -1,23 +1,17 @@
 package com.bridgelabz;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Enumeration;
 
+import java.sql.*;
+import java.util.Enumeration;
 public class EmployeePayroll {
     static Connection con = null;
-
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws EmployeeCustomException, SQLException {
         con = connected();
         reteriveData(con);
+        updateData(con);
 
     }
-
-    public static Connection connected()  {
+    public static Connection connected() throws EmployeeCustomException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false"; // declare JdbcURL
         String UserName = "root";
         String Password = "root";
@@ -31,7 +25,7 @@ public class EmployeePayroll {
             e.printStackTrace(); // for tracing the exception
 
         }
-        listDrivers();		//	static method calling
+        listDrivers(); // static method calling
         try {
             System.out.println("Connecting to Database...:" + jdbcURL); // for loading the drive for connect
             connection = DriverManager.getConnection(jdbcURL, UserName, Password);
@@ -44,9 +38,8 @@ public class EmployeePayroll {
         return connection;
 
     }
-
-    public static void reteriveData(Connection connection) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("Select * from employee_payroll");
+    public static void reteriveData(Connection connection) throws EmployeeCustomException, SQLException {
+        PreparedStatement ps = connection.prepareStatement("Select * from Employee_Payroll");
         ResultSet result = ps.executeQuery();
         while (result.next()) {
             System.out.print(result.getInt(1));
@@ -58,10 +51,17 @@ public class EmployeePayroll {
             System.out.println();
         }
     }
+    public static void updateData(Connection connection) throws EmployeeCustomException, SQLException {
+        PreparedStatement ps = connection.prepareStatement("update employee_payroll set salary = ? where id = ?;");
+        ps.setDouble(1, 3000000);
+        ps.setInt(2, 1);
 
+        ps.executeUpdate();
+        System.out.println("Update Successfully");
+    }
     public static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
-        while (driverList.hasMoreElements()) {				//static method for itteration.
+        while (driverList.hasMoreElements()) { // static method for iteration.
             Driver driverClass = (Driver) driverList.nextElement();
             System.out.println(" " + driverClass.getClass().getName());
 
