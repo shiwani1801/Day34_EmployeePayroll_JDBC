@@ -1,6 +1,5 @@
 package com.bridgelabz;
 
-
 import java.sql.*;
 import java.util.Enumeration;
 public class EmployeePayroll {
@@ -9,7 +8,7 @@ public class EmployeePayroll {
         con = connected();
         reteriveData(con);
         updateData(con);
-
+        reteriveDataByName(con);
     }
     public static Connection connected() throws EmployeeCustomException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false"; // declare JdbcURL
@@ -52,13 +51,29 @@ public class EmployeePayroll {
         }
     }
     public static void updateData(Connection connection) throws EmployeeCustomException, SQLException {
-        PreparedStatement ps = connection.prepareStatement("update employee_payroll set salary = ? where id = ?;");
+        PreparedStatement ps = con.prepareStatement("update employee_payroll set salary = ? where id = ?;");
         ps.setDouble(1, 3000000);
         ps.setInt(2, 1);
 
         ps.executeUpdate();
         System.out.println("Update Successfully");
     }
+        public static void reteriveDataByName(Connection connection) throws SQLException {
+            String salary = null;
+            String query = "select * from  employee_payroll where name =?";
+            PreparedStatement ps = con.prepareStatement(query);
+           ps.setString(1, "Terisa");
+            ResultSet result = ps.executeQuery();
+            System.out.println("retrive data...........");
+            while (result.next()) {
+                String name = result.getString(2);
+                salary = (result.getString(7));
+
+                System.out.println(
+                        " Name:- " + name + " salary:- " + salary);
+            }
+        }
+
     public static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
         while (driverList.hasMoreElements()) { // static method for iteration.
