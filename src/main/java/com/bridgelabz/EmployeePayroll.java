@@ -9,6 +9,7 @@ public class EmployeePayroll {
         reteriveData(con);
         updateData(con);
         reteriveDataByName(con);
+        particularDateRange(con);
     }
     public static Connection connected() throws EmployeeCustomException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false"; // declare JdbcURL
@@ -40,6 +41,7 @@ public class EmployeePayroll {
     public static void reteriveData(Connection connection) throws EmployeeCustomException, SQLException {
         PreparedStatement ps = connection.prepareStatement("Select * from Employee_Payroll");
         ResultSet result = ps.executeQuery();
+        System.out.println("retrive data...........");
         while (result.next()) {
             System.out.print(result.getInt(1));
             System.out.print(" | ");
@@ -73,6 +75,21 @@ public class EmployeePayroll {
                         " Name:- " + name + " salary:- " + salary);
             }
         }
+    public static void particularDateRange(Connection connection) throws SQLException {
+        String s = "select * from employee_payroll";
+        PreparedStatement ps = con.prepareStatement(s);
+        ResultSet result = ps.executeQuery();
+        System.out.println("particular data range...........");
+        while (result.next()) {
+            int id = result.getInt(1);
+            String name = result.getString(2);
+            String gender = result.getString(6);
+            String salary = result.getString(7);
+            String date = result.getString(13);
+            System.out.println(
+                    "id:- " + id + " | "+" Name:- " + name + " | "+" Gender:- " + gender+" | "+" Salary:- " + salary + " | " + " Date:- " + date);
+        }
+    }
 
     public static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
